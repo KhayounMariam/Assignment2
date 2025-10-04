@@ -167,6 +167,7 @@ static void show_time_on_displays(int hours, int minutes, int seconds) {
 
 /*The timer actual period is one cycle greater than the value stored in the period registers. So write 3000000-1
 converted to hex 0x002DC6BF
+//This sets the timeout flag (TO) every 100 ms, forever
 */
 void labinit(void) {
  *PERIODH = 0x002D;
@@ -216,7 +217,7 @@ void labinit(void) {
       if (++timeoutcount >= 10){
         timeoutcount = 0;
 
-      tick(&mytime);               // advance mm:ss every timeout (≈10×/sec in 2b)
+      tick(&mytime);               // advance mm:ss every timeout (≈10×/sec in 2b), update display
 
       // derive seconds/minutes from packed BCD mytime
       unsigned sec_bcd =  (unsigned)( mytime  & 0xFF);
@@ -248,18 +249,20 @@ void labinit(void) {
 
 2. What would happen if the time-out event-flag was not reset to "0" by your code? Why?
   It stays set, so the polling loop will think a timeout is present every iteration. You'll keep running the "ontimeout" code continously
-  because the condition never goes false
+  because the condition never goes false. Time is run too fast.
 
 
 3. Which device-register (or registers) must be written to define the time between time-out
 events? Describe the function of that register (or of those registers).
-  - PERIODH/PERIODL: the form together the period valu used by the timer. The actual period is cycles, so for 100 ms at 30 MHz you store 3000000-1 = 0x002DC68F
-  split into hig/low.
+  - PERIODH/PERIODL: they form together the period value used by the timer. The actual period is cycles, so for 100 ms at 30 MHz you store 3000000-1 = 0x002DC68F
+  split into high/low. They hold the period value- e.i. how many clock cycles the timer should count before raising the TO.
   - Control: I set CONT(continious mode), START to start counting 
 
 • If you press BTN1 quickly, does the time update reliably? Why, or why not? If not, would
 that be easy to change? If so, how?
-    In this asignment it's a polling code so very short presses can be missed if they happen between polls or during long work. I can fix it
-    by polling every iteration, but it still can be bounce.
+    In this asignment it's a polling code so very short presses can be missed if they happen between polls or during long work. 
+    The program only checks the button's current state each loop iteration.
+    If the press happens between checks, it may be missed.
+    I can fix it by detecting the moment the button goes from 0 to 1 (press)
 
 */
