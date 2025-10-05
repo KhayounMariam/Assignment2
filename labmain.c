@@ -254,8 +254,9 @@ void labinit(void) {
 
 3. Which device-register (or registers) must be written to define the time between time-out
 events? Describe the function of that register (or of those registers).
-  - PERIODH/PERIODL: they form together the period value used by the timer. The actual period is cycles, so for 100 ms at 30 MHz you store 3000000-1 = 0x002DC68F
-  split into high/low. They hold the period value- e.i. how many clock cycles the timer should count before raising the TO.
+  - PERIODH/PERIODL: they togather define the timer's perid value in clock cycles. The timer counts form 0 up to this value,
+  Then raises the timeout flag (TO). By writing the desired value into these registers, we set the time interval between timeout events. 
+  The period value is given by looking at 100 ms at 30 MHz -> 3000000-1 = 0x002DC6BF. 
   - Control: I set CONT(continious mode), START to start counting 
 
 • If you press BTN1 quickly, does the time update reliably? Why, or why not? If not, would
