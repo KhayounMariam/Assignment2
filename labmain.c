@@ -257,6 +257,8 @@ events? Describe the function of that register (or of those registers).
   - PERIODH/PERIODL: they togather define the timer's perid value in clock cycles. The timer counts form 0 up to this value,
   Then raises the timeout flag (TO). By writing the desired value into these registers, we set the time interval between timeout events. 
   The period value is given by looking at 100 ms at 30 MHz -> 3000000-1 = 0x002DC6BF. 
+  BONUS QUESTION: The period value is split into HIGH and LOW because the timer uses a 32-bit period,
+  but the hardware exposes the registers as 16 bits each
   - Control: I set CONT(continious mode), START to start counting 
 
 • If you press BTN1 quickly, does the time update reliably? Why, or why not? If not, would
