@@ -243,7 +243,7 @@ void labinit(void) {
 
 /*
 1.When the time-out event-flag is a "1", how does your code reset it to "0"?
-    By writing the TO bit back to the status register: *STatuS = STATUS_TO; 
+    By writing the TO bit back (Status_to value) to the status register: *STatuS = STATUS_TO; 
     this clears the event so the next timeout can be detected
 
 
